@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title><?=$form->getTitle()?></title>
-    <script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/iview@2.14.3/dist/styles/iview.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/iview@2.14.3/dist/iview.min.js"></script>
+    <script src="/public/common/vue.min.js"></script>
+    <link href="/public/common/iview/styles/iview.css" rel="stylesheet">
+    <script src="/public/common/iview/iview.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/form-create/district/province_city.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/form-create@1.5.1/dist/form-create.min.js"></script>
