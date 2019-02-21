@@ -276,7 +276,7 @@
 {include file="public/style"}
 <script src="{__ADMIN_PATH}js/index.js"></script>
 <script>
-    $(function() {
+    /*$(function() {
         function getnotice() {
             $.getJSON("{:Url('Jnotice')}",function(res){
                 console.log(res);
@@ -291,7 +291,7 @@
         }
         getnotice();
         setInterval(getnotice, 3000);
-    });
+    });*/
 
 </script>
 </body>
