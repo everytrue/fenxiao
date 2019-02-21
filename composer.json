@@ -24,7 +24,9 @@
         "overtrue/wechat": "^3.3",
         "xaboy/form-builder": "^1.2",
         "tp5er/tp5-databackup": "^1.0",
-        "phpoffice/phpexcel": "^1.8"
+        "phpoffice/phpexcel": "^1.8",
+        "ext-curl": "*",
+        "ext-json": "*"
     },
     "extra": {
         "think-path": "thinkphp"
