@@ -1,6 +1,6 @@
 .idea/
 runtime/
 public/install/
-public/static/
+#public/static/
 public/uploads/
 public/backup/
