@@ -256,7 +256,7 @@ class AuthApi extends AuthController
      * @param string $key
      * @return \think\response\Json
      */
-    public function create_order($key = '')
+    /*public function create_order($key = '')
     {
         if(!$key) return JsonService::fail('参数错误!');
         if(StoreOrder::be(['order_id|unique'=>$key,'uid'=>$this->userInfo['uid'],'is_del'=>0]))
@@ -295,6 +295,68 @@ class AuthApi extends AuthController
                     return JsonService::status('success','余额支付成功',$info);
                 else
                     return JsonService::status('pay_error',StoreOrder::getErrorInfo());
+            }else if($payType == 'offline'){
+                StoreOrder::createOrderTemplate($order);
+                return JsonService::status('success','订单创建成功',$info);
+            }
+        }else{
+            return JsonService::fail(StoreOrder::getErrorInfo('订单生成失败!'));
+        }
+    }*/
+
+    /**
+     * TODO 重新生成订单方法
+     * =====================
+     * @date 2019年2月23日
+     * @version 1.0
+     * @author qinshuze
+     * =====================
+     * @param string $key
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function create_order($key = '')
+    {
+        if(!$key) return JsonService::fail('参数错误!');
+        if(StoreOrder::be(['order_id|unique'=>$key,'uid'=>$this->userInfo['uid'],'is_del'=>0]))
+            return JsonService::status('extend_order','订单已生成',['orderId'=>$key,'key'=>$key]);
+        list($addressId,$couponId,$payType,$useIntegral,$mark,$combinationId,$pinkId,$seckill_id,$bargainId) = UtilService::postMore([
+            'addressId','couponId','payType','useIntegral','mark',['combinationId',0],['pinkId',0],['seckill_id',0],['bargainId',0]
+        ],Request::instance(),true);
+        $payType = strtolower($payType);
+        if($bargainId) StoreBargainUser::setBargainUserStatus($bargainId,$this->userInfo['uid']);//修改砍价状态
+        if($pinkId) if(StorePink::getIsPinkUid($pinkId)) return JsonService::status('ORDER_EXIST','订单生成失败，你已经在该团内不能再参加了',['orderId'=>StoreOrder::getStoreIdPink($pinkId)]);
+        if($pinkId) if(StoreOrder::getIsOrderPink($pinkId)) return JsonService::status('ORDER_EXIST','订单生成失败，你已经参加该团了，请先支付订单',['orderId'=>StoreOrder::getStoreIdPink($pinkId)]);
+        $order = StoreOrder::cacheKeyCreateOrder($this->userInfo['uid'],$key,$addressId,$payType,$useIntegral,$couponId,$mark,$combinationId,$pinkId,$seckill_id,$bargainId);
+        $orderId = $order['order_id'];
+        $info = compact('orderId','key');
+        if($orderId){
+            if($payType == 'weixin'){
+                $orderInfo = StoreOrder::where('order_id',$orderId)->find();
+                if(!$orderInfo || !isset($orderInfo['paid'])) exception('支付订单不存在!');
+                if($orderInfo['paid']) exception('支付已支付!');
+                if(bcsub((float)$orderInfo['pay_price'],0,2) <= 0){
+                    if(StoreOrder::jsPayPrice($orderId,$this->userInfo['uid']))
+                        return JsonService::status('success','微信支付成功',$info);
+                    else
+                        return JsonService::status('pay_error',StoreOrder::getErrorInfo());
+                }else{
+                    try{
+                        $jsConfig = StoreOrder::jsPay($orderId);
+                    }catch (\Exception $e){
+                        return JsonService::status('pay_error',$e->getMessage(),$info);
+                    }
+                    $info['jsConfig'] = $jsConfig;
+                    return JsonService::status('wechat_pay','订单创建成功',$info);
+                }
+            }else if($payType == 'yue') {
+                if (StoreOrder::yuePay($orderId, $this->userInfo['uid']))
+                    return JsonService::status('success', '余额支付成功', $info);
+                else
+                    return JsonService::status('pay_error', StoreOrder::getErrorInfo());
+            }else if ($payType == 'cards') {
+                return JsonService::status('success','订单生成成功',$info);
             }else if($payType == 'offline'){
                 StoreOrder::createOrderTemplate($order);
                 return JsonService::status('success','订单创建成功',$info);

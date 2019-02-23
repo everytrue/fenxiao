@@ -255,6 +255,18 @@ class StoreOrder extends ModelBasic
             'cost'=>$priceGroup['costPrice'],
             'unique'=>$key
         ];
+
+        // TODO 信用卡商品处理
+        if ($priceGroup['is_card'] == 1) {
+            $orderInfo['type'] = 1;
+            $orderInfo['pay_type'] = '无';
+            $orderInfo['user_address'] = '无';
+            $orderInfo['total_price'] = 0;
+            $orderInfo['total_postage'] = 0;
+            $orderInfo['pay_price'] = 0;
+            $orderInfo['status'] = 1;
+        }
+
         $order = self::set($orderInfo);
         if(!$order)return self::setErrorInfo('订单生成失败!');
         $res5 = true;
@@ -320,6 +332,46 @@ class StoreOrder extends ModelBasic
         self::beginTrans();
         $res1 = false !== User::bcDec($uid,'now_money',$orderInfo['pay_price'],'uid');
         $res2 = UserBill::expend('购买商品',$uid,'now_money','pay_product',$orderInfo['pay_price'],$orderInfo['id'],$userInfo['now_money'],'余额支付'.floatval($orderInfo['pay_price']).'元购买商品');
+        $res3 = self::paySuccess($order_id);
+        try{
+            HookService::listen('yue_pay_product',$userInfo,$orderInfo,false,PaymentBehavior::class);
+        }catch (\Exception $e){
+            self::rollbackTrans();
+            return self::setErrorInfo($e->getMessage());
+        }
+        $res = $res1 && $res2 && $res3;
+        self::checkTrans($res);
+        return $res;
+    }
+
+    /**
+     * TODO 信用卡
+     * =====================
+     * @date 2019年2月23日
+     * @version 1.0
+     * @author qinshuze
+     * =====================
+     * @param $order_id
+     * @param $uid
+     * @return bool
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public static function cardsPay($order_id,$uid)
+    {
+        $orderInfo = self::where('uid',$uid)->where('order_id',$order_id)->where('is_del',0)->find();
+        if(!$orderInfo) return self::setErrorInfo('订单不存在!');
+        if($orderInfo['paid']) return self::setErrorInfo('该订单已支付!');
+        if($orderInfo['pay_type'] != 'yue') return self::setErrorInfo('该订单不能使用余额支付!');
+        $userInfo = User::getUserInfo($uid);
+
+        $userInfo['now_money'] = 1000000;   // 重写用户余额
+        if($userInfo['now_money'] < $orderInfo['pay_price'])
+            return self::setErrorInfo('余额不足'.floatval($orderInfo['pay_price']));
+        self::beginTrans();
+        $res1 = false !== User::bcDec($uid,'now_money',$orderInfo['pay_price'],'uid');
+        $res2 = UserBill::expend('信用卡申请',$uid,'now_money','pay_product',$orderInfo['pay_price'],$orderInfo['id'],$userInfo['now_money'],'余额支付'.floatval($orderInfo['pay_price']).'元购买商品');
         $res3 = self::paySuccess($order_id);
         try{
             HookService::listen('yue_pay_product',$userInfo,$orderInfo,false,PaymentBehavior::class);
