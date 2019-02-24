@@ -257,15 +257,15 @@ class StoreOrder extends ModelBasic
         ];
 
         // TODO 信用卡商品处理
-        if ($priceGroup['is_card'] == 1) {
-            $orderInfo['type'] = 1;
-            $orderInfo['pay_type'] = '无';
-            $orderInfo['user_address'] = '无';
-            $orderInfo['total_price'] = 0;
-            $orderInfo['total_postage'] = 0;
-            $orderInfo['pay_price'] = 0;
-            $orderInfo['status'] = 1;
-        }
+//        if ($priceGroup['is_card'] == 1) {
+//            $orderInfo['type'] = 1;
+//            $orderInfo['pay_type'] = '无';
+//            $orderInfo['user_address'] = '无';
+//            $orderInfo['total_price'] = 0;
+//            $orderInfo['total_postage'] = 0;
+//            $orderInfo['pay_price'] = 0;
+//            $orderInfo['status'] = 1;
+//        }
 
         $order = self::set($orderInfo);
         if(!$order)return self::setErrorInfo('订单生成失败!');

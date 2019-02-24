@@ -179,6 +179,23 @@ class Store extends AuthController
         return $this->fetch();
     }
 
+    public function confirm_order_api($cartId = '')
+    {
+        if (!is_string($cartId) || !$cartId) return '请提交购买的商品!';
+        $cartGroup = StoreCart::getUserProductCartList($this->userInfo['uid'],$cartId,1);
+        if(count($cartGroup['invalid'])) return $cartGroup['invalid'][0]['productInfo']['store_name'].'已失效!';
+        if(!$cartGroup['valid']) return '请提交购买的商品!';
+
+        $cartInfo = $cartGroup['valid'];
+        $priceGroup = StoreOrder::getOrderPriceGroup($cartInfo);
+        $other = [
+            'offlinePostage'=>SystemConfigService::get('offline_postage'),
+            'integralRatio'=>SystemConfigService::get('integral_ratio')
+        ];
+
+        return ['orderKey'=>StoreOrder::cacheOrderInfo($this->userInfo['uid'],$cartInfo,$priceGroup,$other)];
+    }
+
     public function combination(){
         $where = array();
         $store_combination = StoreCombination::getAll(0,20);

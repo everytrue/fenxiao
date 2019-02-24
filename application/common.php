@@ -58,3 +58,18 @@ function makePathToUrl($path,$type = 2)
     }else return '';
 
 }
+
+/**
+ * cookie数组转字符串
+ * @param array $cookie
+ * @return string
+ */
+function cookieToString(Array $cookie)
+{
+    $sCookie = '';
+    foreach ($cookie as $k=>$v) {
+        $sCookie .= "{$k}={$v}; ";
+    }
+
+    return $sCookie;
+}

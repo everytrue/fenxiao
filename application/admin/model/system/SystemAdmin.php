@@ -100,7 +100,7 @@ class SystemAdmin extends ModelBasic
     public static function activeAdminIdOrFail()
     {
         $adminId = Session::get('adminId');
-        if(!$adminId) exception('访问用户为登陆登陆!');
+        if(!$adminId) exception('访问用户未登陆登陆!');
         return $adminId;
     }
 

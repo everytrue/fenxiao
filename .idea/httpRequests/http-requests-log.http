@@ -1,0 +1,31 @@
+POST http://192.168.0.101/index.php/wap/auth_api/create_order/key/4027e84784a64e861a19852fff599227?addressId=2&bargainId=0&couponId=&mark=&payType=yue&seckill_id=0&useIntegral=false
+Accept: */*
+Cache-Control: no-cache
+Cookie: order=id%20desc; force=0; sites_path=/www/wwwroot; SetName=; backup_path=/www/backup; uploadSize=1073741824; cutFileName=null; copyFileName=null; PHPSESSID=v9gh8r5acudom6gvb731f497e5; vcodesum=9; is_bg=1; is_login=1; BT_PANEL_6=740f8a8b-cd7d-47a9-9f26-f4614f8c9291.fszhWkcpmDOwLNyCyDr6mIRxAns; request_token=e7a3834d0cc8e34b5cd6de6fd2e5c19e; serverType=%7B%7Bsession%5B%27webserver%27%5D%7D%7D; memSize=1196; rank=a; Path=/www/wwwroot/CRMEB/application/wap/controller
+
+<> 2019-02-24T114035.200.html
+
+###
+
+POST http://192.168.0.101/index.php/wap/auth_api/create_order/key/4027e84784a64e861a19852fff599227
+Accept: */*
+Cache-Control: no-cache
+Cookie: order=id%20desc; force=0; sites_path=/www/wwwroot; SetName=; backup_path=/www/backup; uploadSize=1073741824; cutFileName=null; copyFileName=null; PHPSESSID=v9gh8r5acudom6gvb731f497e5; vcodesum=9; is_bg=1; is_login=1; BT_PANEL_6=740f8a8b-cd7d-47a9-9f26-f4614f8c9291.fszhWkcpmDOwLNyCyDr6mIRxAns; request_token=e7a3834d0cc8e34b5cd6de6fd2e5c19e; serverType=%7B%7Bsession%5B%27webserver%27%5D%7D%7D; memSize=1196; rank=a; Path=/www/wwwroot/CRMEB/application/wap/controller
+
+{ 	"addressId": 2, 	"bargainId": 0, 	"couponId": "", 	"mark": "", 	"payType": "yue", 	"seckill_id": 0, 	"useIntegral": false }
+
+<> 2019-02-24T113920.200.html
+
+###
+
+POST http://192.168.0.101/index.php/wap/auth_api/create_order/key/4027e84784a64e861a19852fff599227
+Accept: */*
+Cache-Control: no-cache
+Cookie: order=id%20desc; force=0; sites_path=/www/wwwroot; SetName=; backup_path=/www/backup; uploadSize=1073741824; cutFileName=null; copyFileName=null; PHPSESSID=v9gh8r5acudom6gvb731f497e5; vcodesum=9; is_bg=1; is_login=1; BT_PANEL_6=740f8a8b-cd7d-47a9-9f26-f4614f8c9291.fszhWkcpmDOwLNyCyDr6mIRxAns; request_token=e7a3834d0cc8e34b5cd6de6fd2e5c19e; serverType=%7B%7Bsession%5B%27webserver%27%5D%7D%7D; memSize=1196; rank=a; Path=/www/wwwroot/CRMEB/application/wap/controller
+
+{ 	"addressId": 2, 	"bargainId": 0, 	"couponId": "", 	"mark": "", 	"payType": "yue", 	"seckill_id": 0, 	"useIntegral": false }
+
+<> 2019-02-24T113831.200.html
+
+###
+
