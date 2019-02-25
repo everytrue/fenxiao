@@ -12,12 +12,14 @@
 
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="pass">通过</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="reject">驳回</a>
 </script>
 <script type="text/html" id="detail"></script>
 <script>
     layui.use(['table', 'layer'], function(){
-        var table = layui.table;
-        table.render({
+        let table = layui.table;
+        let tab = table.render({
             elem: '#list'
             ,url:'/index.php/admin/approval.approval_api/pageList'
             ,parseData: function (res) {
@@ -57,6 +59,18 @@
                             content: response
                         });
                     }
+                });
+            } else if (layEvent === 'pass') {
+                $.get('/index.php/admin/approval.approval_api/pass/id/' + data.id, function (data) {
+                    if (data.code !== 200) return layer.msg(data.msg);
+                    layer.msg(data.msg);
+                    tab.reload();
+                });
+            } else if (layEvent === 'reject') {
+                $.get('/index.php/admin/approval.approval_api/reject/id/' + data.id, function (data) {
+                    if (data.code !== 200) return layer.msg(data.msg);
+                    layer.msg(data.msg);
+                    tab.reload();
                 });
             }
         });

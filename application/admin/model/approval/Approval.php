@@ -9,6 +9,7 @@
 namespace app\admin\model\approval;
 
 use app\admin\controller\order\StoreOrder;
+use app\admin\model\order\StoreOrder as StoreOrderModel;
 use app\admin\model\order\StoreOrderStatus;
 use app\admin\model\store\StoreProduct;
 use app\admin\model\system\SystemAdmin;
@@ -16,12 +17,9 @@ use app\wap\controller\AuthApi;
 use app\wap\controller\Store;
 use basic\ModelBasic;
 use service\HookService;
-use think\Cookie;
 use think\Db;
 use think\Exception;
 use traits\ModelTrait;
-use util\Curl;
-use app\admin\model\order\StoreOrder as StoreOrderModel;
 
 class Approval extends ModelBasic
 {
@@ -126,6 +124,7 @@ class Approval extends ModelBasic
         if ($result) throw new Exception($result);
 
         $data['order_id'] = $orderId;
+        $data['create_time'] = time();
         self::insert($data);
     }
 
