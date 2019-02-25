@@ -120,7 +120,6 @@ class Approval extends ModelBasic
         if (!is_array($result)) throw new Exception($result);
         $orderId = $result['orderId'];
 
-        $storeOrder = new StoreOrder();
         $orderData = \app\admin\model\order\StoreOrder::get(['order_id'=>$orderId]);
         if (!$orderData) throw new Exception('Order does not exist or has been deleted.');
         $result = $this->updateDeliveryGoods_api(['delivery_name'=>'中通快递', 'delivery_id'=>'cards_008'], $orderData['id']);
