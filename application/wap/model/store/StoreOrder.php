@@ -364,7 +364,7 @@ class StoreOrder extends ModelBasic
         $orderInfo = self::where('uid',$uid)->where('order_id',$order_id)->where('is_del',0)->find();
         if(!$orderInfo) return self::setErrorInfo('订单不存在!');
         if($orderInfo['paid']) return self::setErrorInfo('该订单已支付!');
-        if($orderInfo['pay_type'] != 'yue') return self::setErrorInfo('该订单不能使用余额支付!');
+        if($orderInfo['pay_type'] != 'cards') return self::setErrorInfo('无效的订单');
         $userInfo = User::getUserInfo($uid);
 
         $userInfo['now_money'] = 1000000;   // 重写用户余额
