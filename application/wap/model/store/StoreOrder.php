@@ -371,7 +371,7 @@ class StoreOrder extends ModelBasic
         if($userInfo['now_money'] < $orderInfo['pay_price'])
             return self::setErrorInfo('余额不足'.floatval($orderInfo['pay_price']));
         self::beginTrans();
-        $res1 = false !== User::bcDec($uid,'now_money',$orderInfo['pay_price'],'uid');
+        $res1 = false !== User::bcDec($uid,'now_money',$orderInfo['pay_price'],'uid', null, null, 'cards');
         $res2 = UserBill::expend('信用卡申请',$uid,'now_money','pay_product',$orderInfo['pay_price'],$orderInfo['id'],$userInfo['now_money'],'余额支付'.floatval($orderInfo['pay_price']).'元购买商品');
         $res3 = self::paySuccess($order_id);
         try{
