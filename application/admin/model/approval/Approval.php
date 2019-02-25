@@ -62,7 +62,7 @@ class Approval extends ModelBasic
         Db::startTrans();
         self::update(['id'=>$id, 'status'=>1]);
         $storeOrder = new StoreOrder();
-        $msg = $storeOrder->take_delivery_func(['order_id'=>$approval['order_id']]);
+        $msg = $storeOrder->take_delivery_func($approval['order_id'], 'order_id');
         if (!$msg) {
             Db::rollback();
             throw new Exception($msg);
