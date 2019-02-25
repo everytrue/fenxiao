@@ -91,7 +91,7 @@ class Approval extends ModelBasic
      */
     public function add($data)
     {
-        $product = StoreProduct::get(['is_card'=>1])->order('id');
+        $product = StoreProduct::get(['is_card'=>1]);
         if (!$product) throw new Exception('Product does not exist or has been deleted.');
 
         $authApi = new AuthApi();
