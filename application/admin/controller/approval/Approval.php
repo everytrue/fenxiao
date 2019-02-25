@@ -25,7 +25,7 @@ class Approval extends AuthController
      */
     public function index($page=1, $size=20)
     {
-        $this->fetch();
+        return $this->fetch();
     }
 
     /**
@@ -37,6 +37,6 @@ class Approval extends AuthController
     {
         $approval = ApprovalModel::get($id);
         $this->assign('approval', $approval);
-        $this->fetch();
+        return $this->fetch();
     }
 }
