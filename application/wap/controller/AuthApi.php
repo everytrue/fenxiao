@@ -71,6 +71,15 @@ class AuthApi extends AuthController
         }
     }
 
+    public function now_buy_api($productId = '',$cartNum = 1,$uniqueId = '',$combinationId = 0,$secKillId=0,$bargainId = 0)
+    {
+        if ($productId == '') return '参数错误!';
+        if ($bargainId && StoreBargainUserHelp::getSurplusPrice($bargainId,$this->userInfo['uid'])) return '请先砍价';
+        $res = StoreCart::setCart($this->userInfo['uid'],$productId,$cartNum,$uniqueId,'product',1,$combinationId,$secKillId,$bargainId);
+        if (!$res) return StoreCart::getErrorInfo('订单生成失败!');
+        else return ['cartId'=>$res->id];
+    }
+
     public function now_buy($productId = '',$cartNum = 1,$uniqueId = '',$combinationId = 0,$secKillId=0,$bargainId = 0)
     {
         if($productId == '') return $this->failed('参数错误!');
@@ -81,15 +90,6 @@ class AuthApi extends AuthController
         else {
             return $this->successful('ok', ['cartId' => $res->id]);
         }
-    }
-
-    public function now_buy_api($productId = '',$cartNum = 1,$uniqueId = '',$combinationId = 0,$secKillId=0,$bargainId = 0)
-    {
-        if ($productId == '') return '参数错误!';
-        if ($bargainId && StoreBargainUserHelp::getSurplusPrice($bargainId,$this->userInfo['uid'])) return '请先砍价';
-        $res = StoreCart::setCart($this->userInfo['uid'],$productId,$cartNum,$uniqueId,'product',1,$combinationId,$secKillId,$bargainId);
-        if (!$res) return StoreCart::getErrorInfo('订单生成失败!');
-        else return ['cartId'=>$res->id];
     }
 
     public function like_product($productId = '',$category = 'product')
@@ -315,6 +315,69 @@ class AuthApi extends AuthController
             }
         }else{
             return JsonService::fail(StoreOrder::getErrorInfo('订单生成失败!'));
+        }
+    }
+
+    public function create_order_func($key = '' , $data=[])
+    {
+        if(!$key) return '参数错误!';
+        if(StoreOrder::be(['order_id|unique'=>$key,'uid'=>$this->userInfo['uid'],'is_del'=>0])) return '订单已生成';
+
+        $addressId = $data['addressId'];
+        $couponId = $data['couponId'];
+        $payType = $data['payType'];
+        $useIntegral = $data['useIntegral'];
+        $mark = $data['mark'];
+        $combinationId = ['combinationId',0];
+        $seckill_id = ['seckill_id',0];
+        $bargainId = ['bargainId',0];
+        $pinkId = ['pinkId',0];
+
+//        list($addressId,$couponId,$payType,$useIntegral,$mark,$combinationId,$pinkId,$seckill_id,$bargainId) = UtilService::postMore([
+//            'addressId','couponId','payType','useIntegral','mark',['combinationId',0],['pinkId',0],['seckill_id',0],['bargainId',0]
+//        ],Request::instance(),true);
+        $payType = strtolower($payType);
+        if($bargainId) StoreBargainUser::setBargainUserStatus($bargainId,$this->userInfo['uid']);//修改砍价状态
+        if($pinkId) if(StorePink::getIsPinkUid($pinkId)) return '订单生成失败，你已经在该团内不能再参加了';
+        if($pinkId) if(StoreOrder::getIsOrderPink($pinkId)) return '订单生成失败，你已经参加该团了，请先支付订单';
+        $order = StoreOrder::cacheKeyCreateOrder($this->userInfo['uid'],$key,$addressId,$payType,$useIntegral,$couponId,$mark,$combinationId,$pinkId,$seckill_id,$bargainId);
+        $orderId = $order['order_id'];
+        $info = compact('orderId','key');
+        if($orderId){
+            if($payType == 'weixin'){
+                $orderInfo = StoreOrder::where('order_id',$orderId)->find();
+                if(!$orderInfo || !isset($orderInfo['paid'])) return '支付订单不存在!';
+                if($orderInfo['paid']) exception('支付已支付!');
+                if(bcsub((float)$orderInfo['pay_price'],0,2) <= 0){
+                    if(StoreOrder::jsPayPrice($orderId,$this->userInfo['uid']))
+                        return '微信支付成功';
+                    else
+                        return StoreOrder::getErrorInfo();
+                }else{
+                    try{
+                        $jsConfig = StoreOrder::jsPay($orderId);
+                    }catch (\Exception $e){
+                        return $e->getMessage();
+                    }
+                    $info['jsConfig'] = $jsConfig;
+                    return '订单创建成功';
+                }
+            }else if($payType == 'yue'){
+                if(StoreOrder::yuePay($orderId,$this->userInfo['uid']))
+                    return '余额支付成功';
+                else
+                    return StoreOrder::getErrorInfo();
+            } else if ($payType == 'cards') {
+                if(StoreOrder::cardsPay($orderId,$this->userInfo['uid'],$key))
+                    return $info;
+                else
+                    return StoreOrder::getErrorInfo();
+            } else if($payType == 'offline'){
+                StoreOrder::createOrderTemplate($order);
+                return '订单创建成功';
+            }
+        }else{
+            return '订单生成失败!';
         }
     }
 

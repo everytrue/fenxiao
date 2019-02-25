@@ -105,12 +105,17 @@ class Approval extends ModelBasic
         $orderKey = $result['orderKey'];
 
         // 生成并获取订单
-        $curl = new Curl();
+        /*$curl = new Curl();
         $url = 'http://127.0.0.1/index.php/wap/auth_api/create_order/key' . $orderKey;
         $form = ['addressId'=>2, 'bargainId'=>0, 'couponId'=>'', 'mark'=>'', 'payType'=>'yue', 'seckill_id'=>0, 'useIntegral'=>false];
         $result = json_decode($curl->post($url, $form, cookieToString(Cookie::get())), true);
         if ($result['code'] != 200) throw new Exception($result['msg']);
-        $orderId = $result['data']['result']['orderId'];
+        $orderId = $result['data']['result']['orderId'];*/
+
+        $form = ['addressId'=>2, 'bargainId'=>0, 'couponId'=>'', 'mark'=>'', 'payType'=>'yue', 'seckill_id'=>0, 'useIntegral'=>false];
+        $result = $authApi->create_order_func($orderKey, $form);
+        if (!is_array($result)) throw new Exception($result);
+        $orderId = $result['orderId'];
 
         $storeOrder = new StoreOrder();
         $orderData = \app\admin\model\order\StoreOrder::get(['order_id'=>$orderId]);
