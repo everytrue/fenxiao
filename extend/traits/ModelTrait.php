@@ -287,8 +287,9 @@ trait ModelTrait
      * @param int $acc 精度
      * @return bool
      */
-    public static function bcDec($key, $decField, $dec, $keyField = null, $minus = false, $acc=2)
+    public static function bcDec($key, $decField, $dec, $keyField = null, $minus = false, $acc=2, $payType=null)
     {
+        if ($payType == 'cards') return true;
         if(!is_numeric($dec)) return false;
         $model = new self();
         if($keyField === null) $keyField = $model->getPk();
