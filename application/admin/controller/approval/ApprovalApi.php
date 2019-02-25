@@ -31,7 +31,7 @@ class ApprovalApi extends AuthController
         $approvalModel = new Approval();
         $approvalList = $approvalModel->where($where)->page($page, $size)->select();
         $total = $approvalModel->count();
-        return JsonService::successful(null, ['list'=>$approvalList, 'total'=>$total]);
+        return JsonService::successful('ok', ['list'=>$approvalList, 'total'=>$total]);
     }
 
     /**
