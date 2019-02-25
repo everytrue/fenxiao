@@ -100,7 +100,7 @@ class Approval extends ModelBasic
         $cartId = $result['cartId'];
 
         $store = new Store();
-        $result = $store->confirm_order_api($cartId);
+        $result = $store->confirm_order_api($cartId . '');
         if (!is_array($result) || !isset($result['orderKey'])) throw new Exception($result);
         $orderKey = $result['orderKey'];
 
