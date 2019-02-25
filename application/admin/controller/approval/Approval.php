@@ -25,9 +25,7 @@ class Approval extends AuthController
      */
     public function index($page=1, $size=20)
     {
-        $search = $this->request->post();
-        $approvalModel = new ApprovalModel();
-        $approvalList = $approvalModel->page($page, $size)->select();
+        $this->fetch();
     }
 
     /**
