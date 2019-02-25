@@ -30,18 +30,8 @@ class ApprovalApi extends AuthController
         $where = $this->request->post();
         $approvalModel = new Approval();
         $approvalList = $approvalModel->where($where)->page($page, $size)->select();
-        return JsonService::successful(null, $approvalList);
-    }
-
-    /**
-     * 详情
-     * @param int $id 审批id
-     * @throws \think\exception\DbException
-     */
-    public function detail($id)
-    {
-        $approval = Approval::get($id);
-        return JsonService::successful(null, $approval);
+        $total = $approvalModel->count();
+        return JsonService::successful(null, ['list'=>$approvalList, 'total'=>$total]);
     }
 
     /**

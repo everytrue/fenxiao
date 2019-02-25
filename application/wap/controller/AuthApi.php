@@ -304,7 +304,12 @@ class AuthApi extends AuthController
                     return JsonService::status('success','余额支付成功',$info);
                 else
                     return JsonService::status('pay_error',StoreOrder::getErrorInfo());
-            }else if($payType == 'offline'){
+            } else if ($payType == 'cards') {
+                if(StoreOrder::cardsPay($orderId,$this->userInfo['uid'],$key))
+                    return JsonService::status('success','余额支付成功',$info);
+                else
+                    return JsonService::status('pay_error',StoreOrder::getErrorInfo());
+            } else if($payType == 'offline'){
                 StoreOrder::createOrderTemplate($order);
                 return JsonService::status('success','订单创建成功',$info);
             }

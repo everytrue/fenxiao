@@ -29,4 +29,16 @@ class Approval extends AuthController
         $approvalModel = new ApprovalModel();
         $approvalList = $approvalModel->page($page, $size)->select();
     }
+
+    /**
+     * 详情
+     * @param int $id 审批id
+     * @throws \think\exception\DbException
+     */
+    public function detail($id)
+    {
+        $approval = ApprovalModel::get($id);
+        $this->assign('approval', $approval);
+        $this->fetch();
+    }
 }

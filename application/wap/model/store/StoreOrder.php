@@ -358,8 +358,9 @@ class StoreOrder extends ModelBasic
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public static function cardsPay($order_id,$uid)
+    public static function cardsPay($order_id,$uid, $key)
     {
+        $cartGroup = self::getCacheOrderInfo($uid,$key);
         $orderInfo = self::where('uid',$uid)->where('order_id',$order_id)->where('is_del',0)->find();
         if(!$orderInfo) return self::setErrorInfo('订单不存在!');
         if($orderInfo['paid']) return self::setErrorInfo('该订单已支付!');
