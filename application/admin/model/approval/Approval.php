@@ -9,16 +9,19 @@
 namespace app\admin\model\approval;
 
 use app\admin\controller\order\StoreOrder;
+use app\admin\model\order\StoreOrderStatus;
 use app\admin\model\store\StoreProduct;
 use app\admin\model\system\SystemAdmin;
 use app\wap\controller\AuthApi;
 use app\wap\controller\Store;
 use basic\ModelBasic;
+use service\HookService;
 use think\Cookie;
 use think\Db;
 use think\Exception;
 use traits\ModelTrait;
 use util\Curl;
+use app\admin\model\order\StoreOrder as StoreOrderModel;
 
 class Approval extends ModelBasic
 {
@@ -120,10 +123,21 @@ class Approval extends ModelBasic
         $storeOrder = new StoreOrder();
         $orderData = \app\admin\model\order\StoreOrder::get(['order_id'=>$orderId]);
         if (!$orderData) throw new Exception('Order does not exist or has been deleted.');
-        $result = $storeOrder->updateDeliveryGoods_api(['delivery_name'=>'中通快递', 'delivery_id'=>'cards_008'], $orderData['id']);
+        $result = $this->updateDeliveryGoods_api(['delivery_name'=>'中通快递', 'delivery_id'=>'cards_008'], $orderData['id']);
         if ($result) throw new Exception($result);
 
         $data['order_id'] = $orderId;
         self::insert($data);
+    }
+
+    private function updateDeliveryGoods_api($data, $id){
+        $data['delivery_type'] = 'express';
+        if(!$data['delivery_name']) return '请选择快递公司';
+        if(!$data['delivery_id']) return '请选择快递公司';
+        $data['status'] = 1;
+        StoreOrderModel::edit($data,$id);
+        HookService::afterListen('store_product_order_delivery_goods',$data,$id,false,OrderBehavior::class);
+        StoreOrderStatus::setStatus($id,'delivery_goods','已发货 快递公司：'.$data['delivery_name'].' 快递单号：'.$data['delivery_id']);
+        return null;
     }
 }
