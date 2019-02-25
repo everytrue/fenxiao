@@ -21,7 +21,7 @@
             ,url:'/index.php/admin/approval.approval_api/pageList'
             ,parseData: function (res) {
                 return {
-                    'code': res.code,
+                    'code': res.code === 200?0:res.code,
                     'msg': res.msg,
                     'count': res.data.total,
                     'data': res.data.list
