@@ -62,6 +62,7 @@
                 });
             } else if (layEvent === 'pass') {
                 $.get('/index.php/admin/approval.approval_api/pass/id/' + data.id, function (data) {
+                    data = JSON.parse(data);
                     console.log(data,data.msg);
                     if (data.code !== 200) return layer.msg(data.msg);
                     layer.msg(data.msg);
@@ -69,6 +70,7 @@
                 });
             } else if (layEvent === 'reject') {
                 $.get('/index.php/admin/approval.approval_api/reject/id/' + data.id, function (data) {
+                    data = JSON.parse(data);
                     console.log(data,data.msg);
                     if (data.code !== 200) return layer.msg(data.msg);
                     layer.msg(data.msg);
