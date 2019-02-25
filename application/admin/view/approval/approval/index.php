@@ -13,6 +13,7 @@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
 </script>
+<script type="text/html" id="detail"></script>
 <script>
     layui.use(['table', 'layer'], function(){
         var table = layui.table;
@@ -45,11 +46,17 @@
             var data = obj.data //获得当前行数据
                 ,layEvent = obj.event; //获得 lay-event 对应的值
             if(layEvent === 'detail'){
-                layer.open({
-                    type: 1,
-                    //skin: 'layui-layer-rim', //加上边框
-                    area: ['60%', '500px'], //宽高
-                    content: ['/index.php/admin/approval.approval_api/detail']
+                $('#detail').load('/index.php/admin/approval.approval_api/detail', function (response, status, xhr) {
+                    if (status !== 'success') {
+                        layer.alert(status, {icon: 2});
+                    } else {
+                        layer.open({
+                            type: 1,
+                            //skin: 'layui-layer-rim', //加上边框
+                            area: ['60%', '500px'], //宽高
+                            content: response
+                        });
+                    }
                 });
             }
         });
