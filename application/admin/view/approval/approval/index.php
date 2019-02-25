@@ -18,7 +18,7 @@
         var table = layui.table;
         table.render({
             elem: '#list'
-            ,url:'/index.php/admin/approval.approval_api/page_list'
+            ,url:'/index.php/admin/approval.approval_api/pageList'
             ,parseData: function (res) {
                 return {
                     'code': res.code,
