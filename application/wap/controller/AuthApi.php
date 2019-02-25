@@ -328,10 +328,10 @@ class AuthApi extends AuthController
         $payType = $data['payType'];
         $useIntegral = $data['useIntegral'];
         $mark = $data['mark'];
-        $combinationId = ['combinationId',0];
-        $seckill_id = ['seckill_id',0];
-        $bargainId = ['bargainId',0];
-        $pinkId = ['pinkId',0];
+        $combinationId = 0;
+        $seckill_id = 0;
+        $bargainId = 0;
+        $pinkId = 0;
 
 //        list($addressId,$couponId,$payType,$useIntegral,$mark,$combinationId,$pinkId,$seckill_id,$bargainId) = UtilService::postMore([
 //            'addressId','couponId','payType','useIntegral','mark',['combinationId',0],['pinkId',0],['seckill_id',0],['bargainId',0]
