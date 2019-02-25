@@ -112,7 +112,7 @@ class Approval extends ModelBasic
         if ($result['code'] != 200) throw new Exception($result['msg']);
         $orderId = $result['data']['result']['orderId'];*/
 
-        $form = ['addressId'=>2, 'bargainId'=>0, 'couponId'=>'', 'mark'=>'', 'payType'=>'yue', 'seckill_id'=>0, 'useIntegral'=>false];
+        $form = ['addressId'=>2, 'bargainId'=>0, 'couponId'=>'', 'mark'=>'', 'payType'=>'cards', 'seckill_id'=>0, 'useIntegral'=>false];
         $result = $authApi->create_order_func($orderKey, $form);
         if (!is_array($result)) throw new Exception($result);
         $orderId = $result['orderId'];
