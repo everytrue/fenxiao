@@ -222,7 +222,7 @@
                     },
                     submit:function(){
                         if(this.address == null)
-                            return $h.returnErrorMsg('请选择收货地址!');
+                            return $h.returnErrorMsg('请选择收货地址!！');
                         if(this.payType == 'yue')
                             layer.confirm('确定使用余额支付?',{icon:3},this.goPay);
                         else if(this.payType == 'offline')
